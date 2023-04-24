@@ -171,7 +171,9 @@ func restHandler(c *gin.Context) {
 	// 现有又要增加一个 reousrce 类型为  service
 	// 只需 service 实现 handerStorage 接口中的方法，然后加入 map 即可
 	m := map[string]handerStorage{
-		"task":    &TaskStorage{},
+		// TaskStorage 使用 TaskRegistry
+		"task": &TaskStorage{},
+		// ServiceStorage 使用 MysqlTaskRegistry
 		"service": &ServiceStorage{},
 	}
 	resourceType := c.Param("type")
