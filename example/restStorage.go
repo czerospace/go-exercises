@@ -55,22 +55,45 @@ func main() {
 	r.Run(":8080")
 }
 
+// Task 结构体
 type Task struct {
 	Name        string
 	Description string
 }
 
+// 定义一个 Registry 接口
+type Registry interface {
+	ListTasks() ([]Task, error)
+	CreateTask(task Task) error
+}
+
+// 新建一个 TaskRegistry结构体 实现 Registry 结构
 type TaskRegistry struct {
 }
 
 func (t *TaskRegistry) ListTasks() ([]Task, error) {
 	return []Task{{
-		Name:        "test",
-		Description: "test",
+		Name:        "Task",
+		Description: "TaskRegistry",
 	}}, nil
 }
 
 func (t *TaskRegistry) CreateTask(task Task) error {
+	return nil
+}
+
+// 新建一个 MysqlRegistry 结构体 实现 Registry 结构
+type MysqlTaskRegistry struct {
+}
+
+func (m *MysqlTaskRegistry) ListTasks() ([]Task, error) {
+	return []Task{{
+		Name:        "mysql",
+		Description: "MysqlTaskRegistry",
+	}}, nil
+}
+
+func (m *MysqlTaskRegistry) CreateTask(task Task) error {
 	return nil
 }
 
@@ -111,12 +134,12 @@ func (t *TaskStorage) Create(c *gin.Context) {
 	c.JSON(201, gin.H{"message": "Task created successfully"})
 }
 
-// 定义 TaskStorage 结构体去实现 handerStorage 中的方法
+// 定义 ServiceStorage 结构体去实现 handerStorage 中的方法
 type ServiceStorage struct {
 }
 
 func (t *ServiceStorage) List(c *gin.Context) {
-	taskRegistry := TaskRegistry{}
+	taskRegistry := MysqlTaskRegistry{}
 	tasks, err := taskRegistry.ListTasks()
 	if err != nil {
 		c.JSON(500, gin.H{"error": "Failed to list tasks"})
@@ -131,7 +154,7 @@ func (t *ServiceStorage) Create(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "Bad Request"})
 		return
 	}
-	taskRegistry := TaskRegistry{}
+	taskRegistry := MysqlTaskRegistry{}
 	err := taskRegistry.CreateTask(task)
 	if err != nil {
 		c.JSON(500, gin.H{"error": "Failed to create task"})
