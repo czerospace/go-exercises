@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func Handle(w http.ResponseWriter, r *http.Request) {
+func Handler(w http.ResponseWriter, r *http.Request) {
 
 	// 获取 URL 参数 a
 	a, err := strconv.Atoi(r.URL.Query().Get("a"))
@@ -14,6 +14,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid parameter 'a'", http.StatusBadRequest)
 		return
 	}
+
 	// 获取 URL 参数 b
 	b, err := strconv.Atoi(r.URL.Query().Get("b"))
 	if err != nil {
